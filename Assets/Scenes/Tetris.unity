@@ -157,19 +157,20 @@ MonoBehaviour:
   tetrominoes:
   - tile: {fileID: 11400000, guid: d8f69d40b22a728499fab34a0a73c2c5, type: 2}
     tetromino: 0
-  - tile: {fileID: 11400000, guid: 615721fc21a6651428942f3ee9b40036, type: 2}
-    tetromino: 1
-  - tile: {fileID: 11400000, guid: fce568942d6df094f948160abcd8c85d, type: 2}
-    tetromino: 2
   - tile: {fileID: 11400000, guid: 1678c6baa91e2dc4abbbb17f205f60e7, type: 2}
-    tetromino: 3
+    tetromino: 1
   - tile: {fileID: 11400000, guid: 351db0f06515c1b4db71c41e4a9a5093, type: 2}
-    tetromino: 4
+    tetromino: 2
+  - tile: {fileID: 11400000, guid: 615721fc21a6651428942f3ee9b40036, type: 2}
+    tetromino: 3
   - tile: {fileID: 11400000, guid: a864e1e9d0f91f74292ea2f2bec1e9f1, type: 2}
+    tetromino: 4
+  - tile: {fileID: 11400000, guid: fce568942d6df094f948160abcd8c85d, type: 2}
     tetromino: 5
   - tile: {fileID: 11400000, guid: 172f10a8ce8921241adb9d57b4eada3e, type: 2}
     tetromino: 6
   spawnPosition: {x: -1, y: 8}
+  validBoardSize: {x: 10, y: 20}
 --- !u!156049354 &215779398
 Grid:
   m_ObjectHideFlags: 0

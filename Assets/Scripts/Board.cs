@@ -10,6 +10,16 @@ public class Board : MonoBehaviour
     public TetrominoData[] tetrominoes;
     public Piece activePiece { get; private set; }
     public Vector2Int spawnPosition = new Vector2Int(-1, 8);
+    public Vector2Int validBoardSize = new Vector2Int(10, 20);
+
+    public RectInt validBounds
+    {
+        get
+        {
+            Vector2Int leftBottomCornerLocation = new Vector2Int(-validBoardSize.x / 2, -validBoardSize.y / 2);
+            return new RectInt(leftBottomCornerLocation, validBoardSize);
+        }
+    }
 
     private void Awake()
     {
@@ -36,6 +46,7 @@ public class Board : MonoBehaviour
         Set(activePiece);
 
     }
+
     public void Set(Piece piece)
     {
         for (int i = 0; i < piece.cells.Length; i++)
@@ -43,5 +54,34 @@ public class Board : MonoBehaviour
             Vector2Int tilePosition = piece.cells[i] + piece.position;
             tilemap.SetTile((Vector3Int)tilePosition, piece.data.tile);
         }
+    }
+
+    public void Clear(Piece piece)
+    {
+        for (int i = 0; i < piece.cells.Length; i++)
+        {
+            Vector2Int tilePosition = piece.cells[i] + piece.position;
+            tilemap.SetTile((Vector3Int)tilePosition, null);
+        }
+    }
+
+    public bool IsValidPosition(Piece piece, Vector2Int possiblePosition)
+    {
+        RectInt bounds = validBounds;
+
+        for (int i = 0; i < piece.cells.Length; i++)
+        {
+            Vector2Int possibleTilePostion = piece.cells[i] + possiblePosition;
+
+            if (tilemap.HasTile((Vector3Int)possiblePosition))
+            {
+                return false;
+            }
+            if (!bounds.Contains(possibleTilePostion))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
