@@ -4,6 +4,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Piece : MonoBehaviour
 {
@@ -89,9 +90,8 @@ public class Piece : MonoBehaviour
         return isValid;
     }
 
-    private void Rotate(int rotation)
+    private void ApplyRotationMatrix(int rotation)
     {
-        currentRotationIndex = Wrap(currentRotationIndex + rotation, 0, 4);
 
         for (int i = 0; i < cells.Length; i++)
         {
@@ -115,6 +115,48 @@ public class Piece : MonoBehaviour
 
             cells[i] = new Vector2Int(x, y);
         }
+    }
+
+    private void Rotate(int rotation)
+    {
+        int originalRotationIndex = currentRotationIndex;
+        currentRotationIndex = Wrap(currentRotationIndex + rotation, 0, 4);
+
+        ApplyRotationMatrix(rotation);
+
+        if (!TestWallKicks(originalRotationIndex, rotation))
+        {
+            currentRotationIndex = originalRotationIndex;
+            ApplyRotationMatrix(-rotation);
+        }
+    }
+
+    private bool TestWallKicks(int rotationIndex, int rotationDirection)
+    {
+        int wallKickIndex = GetWallKickIndex(rotationIndex, rotationDirection);
+
+        for (int i = 0; i < data.wallKicks.GetLength(1); i++)
+        {
+            if (MoveLocation(data.wallKicks[wallKickIndex, i]))
+            {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+    private int GetWallKickIndex(int rotationIndex, int rotationDirection)
+    {
+        int wallKickIndex = rotationIndex * 2;
+
+        if (rotationDirection < 0)
+        {
+            wallKickIndex--;
+        }
+
+
+        return Wrap(wallKickIndex, 0, data.wallKicks.GetLength(0));
     }
 
     private int Wrap(int input, int minInclusive, int maxExclusive)
