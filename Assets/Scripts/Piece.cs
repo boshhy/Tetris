@@ -14,6 +14,12 @@ public class Piece : MonoBehaviour
     public Vector2Int position { get; private set; }
     public int currentRotationIndex { get; private set; }
 
+    public float stepDelay = 1f;
+    public float lockDelay = 0.5f;
+
+    private float stepTime;
+    private float lockTime;
+
 
 
     // might need to vector 3 Int
@@ -23,6 +29,9 @@ public class Piece : MonoBehaviour
         this.position = position;
         this.data = data;
         currentRotationIndex = 0;
+        stepTime = Time.time + stepDelay;
+        lockTime = 0f;
+
 
         if (cells == null)
         {
@@ -38,6 +47,8 @@ public class Piece : MonoBehaviour
     public void Update()
     {
         board.Clear(this);
+
+        lockTime += Time.deltaTime;
 
         if (Input.GetKeyDown(KeyCode.K))
         {
@@ -67,12 +78,36 @@ public class Piece : MonoBehaviour
             HardDrop();
         }
 
+        if (Time.time >= stepTime)
+        {
+            Step();
+        }
+
         board.Set(this);
     }
 
-    public void HardDrop()
+    private void Step()
+    {
+        stepTime = Time.time + stepDelay;
+
+        MoveLocation(Vector2Int.down);
+
+        if (lockTime >= lockDelay)
+        {
+            Lock();
+        }
+    }
+
+    private void Lock()
+    {
+        board.Set(this);
+        board.SpawnPiece();
+    }
+
+    private void HardDrop()
     {
         while (MoveLocation(Vector2Int.down)) { continue; }
+        Lock();
     }
 
     public bool MoveLocation(Vector2Int maneuver)
@@ -85,6 +120,7 @@ public class Piece : MonoBehaviour
         if (isValid)
         {
             position = newPosition;
+            lockTime = 0;
         }
 
         return isValid;

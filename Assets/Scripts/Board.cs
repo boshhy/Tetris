@@ -73,11 +73,11 @@ public class Board : MonoBehaviour
         {
             Vector2Int possibleTilePostion = piece.cells[i] + possiblePosition;
 
-            if (tilemap.HasTile((Vector3Int)possiblePosition))
+            if (!bounds.Contains(possibleTilePostion))
             {
                 return false;
             }
-            if (!bounds.Contains(possibleTilePostion))
+            if (tilemap.HasTile((Vector3Int)possibleTilePostion))
             {
                 return false;
             }
