@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -43,8 +44,20 @@ public class Board : MonoBehaviour
         TetrominoData data = tetrominoes[random];
 
         activePiece.Initialize(this, spawnPosition, data);
-        Set(activePiece);
 
+        if (IsValidPosition(activePiece, spawnPosition))
+        {
+            Set(activePiece);
+        }
+        else
+        {
+            GameOver();
+        }
+    }
+
+    private void GameOver()
+    {
+        tilemap.ClearAllTiles();
     }
 
     public void Set(Piece piece)
@@ -82,6 +95,65 @@ public class Board : MonoBehaviour
                 return false;
             }
         }
+        return true;
+    }
+
+    public void ClearLines()
+    {
+        RectInt bounds = validBounds;
+        int yRowPosition = bounds.yMin;
+
+        while (yRowPosition < bounds.yMax)
+        {
+            if (isLineFull(yRowPosition))
+            {
+                LineClear(yRowPosition);
+            }
+            else
+            {
+                yRowPosition++;
+            }
+        }
+
+
+    }
+
+    private void LineClear(int yRowPosition)
+    {
+        RectInt bounds = validBounds;
+
+        for (int xColumnPosition = bounds.xMin; xColumnPosition < bounds.xMax; xColumnPosition++)
+        {
+            tilemap.SetTile(new Vector3Int(xColumnPosition, yRowPosition, 0), null);
+        }
+
+        while (yRowPosition < bounds.yMax)
+        {
+            for (int xColumnPosition = bounds.xMin; xColumnPosition < bounds.xMax; xColumnPosition++)
+            {
+                Vector3Int position = new Vector3Int(xColumnPosition, yRowPosition + 1, 0);
+                TileBase above = tilemap.GetTile(position);
+
+                position = new Vector3Int(xColumnPosition, yRowPosition, 0);
+                tilemap.SetTile(position, above);
+
+            }
+            yRowPosition++;
+        }
+    }
+
+    private bool isLineFull(int yRowPosition)
+    {
+        RectInt bounds = validBounds;
+
+        for (int xColumnPosition = bounds.xMin; xColumnPosition < bounds.xMax; xColumnPosition++)
+        {
+            if (!tilemap.HasTile(new Vector3Int(xColumnPosition, yRowPosition, 0)))
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 }
