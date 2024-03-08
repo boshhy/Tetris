@@ -70,6 +70,7 @@ public class Piece : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
+            AudioManager.instance.PlaySFX(6);
             MoveLocation(Vector2Int.down);
         }
 
@@ -101,17 +102,20 @@ public class Piece : MonoBehaviour
     private void Lock()
     {
         board.Set(this);
+        AudioManager.instance.PlaySFX(10);
         board.ClearLines();
         board.SpawnPiece();
     }
 
     private void HardDrop()
     {
-        while (MoveLocation(Vector2Int.down)) { continue; }
+        AudioManager.instance.PlaySFX(0);
+        while (MoveLocation(Vector2Int.down, true)) { continue; }
         Lock();
+
     }
 
-    public bool MoveLocation(Vector2Int maneuver)
+    public bool MoveLocation(Vector2Int maneuver, bool isHardDrop = false)
     {
         Vector2Int newPosition = position;
         newPosition.x += maneuver.x;
@@ -120,8 +124,21 @@ public class Piece : MonoBehaviour
         bool isValid = board.IsValidPosition(this, newPosition);
         if (isValid)
         {
+            if (maneuver != Vector2Int.down)
+            {
+                AudioManager.instance.PlaySFX(3);
+            }
             position = newPosition;
             lockTime = 0;
+        }
+
+
+        if (!isHardDrop && isValid)
+        {
+            if (!board.IsValidPosition(this, newPosition + Vector2Int.down))
+            {
+                AudioManager.instance.PlaySFX(2);
+            }
         }
 
         return isValid;
@@ -156,6 +173,7 @@ public class Piece : MonoBehaviour
 
     private void Rotate(int rotation)
     {
+
         int originalRotationIndex = currentRotationIndex;
         currentRotationIndex = Wrap(currentRotationIndex + rotation, 0, 4);
 
@@ -165,6 +183,10 @@ public class Piece : MonoBehaviour
         {
             currentRotationIndex = originalRotationIndex;
             ApplyRotationMatrix(-rotation);
+        }
+        else
+        {
+            AudioManager.instance.PlaySFX(5);
         }
     }
 

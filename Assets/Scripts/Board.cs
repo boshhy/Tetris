@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -102,11 +103,13 @@ public class Board : MonoBehaviour
     {
         RectInt bounds = validBounds;
         int yRowPosition = bounds.yMin;
+        int linesCleared = 0;
 
         while (yRowPosition < bounds.yMax)
         {
             if (isLineFull(yRowPosition))
             {
+                linesCleared++;
                 LineClear(yRowPosition);
             }
             else
@@ -115,7 +118,23 @@ public class Board : MonoBehaviour
             }
         }
 
-
+        switch (linesCleared)
+        {
+            case 1:
+                AudioManager.instance.PlaySFX(13);
+                break;
+            case 2:
+                AudioManager.instance.PlaySFX(14);
+                break;
+            case 3:
+                AudioManager.instance.PlaySFX(8);
+                break;
+            case 4:
+                AudioManager.instance.PlaySFX(7);
+                break;
+            default:
+                break;
+        }
     }
 
     private void LineClear(int yRowPosition)
