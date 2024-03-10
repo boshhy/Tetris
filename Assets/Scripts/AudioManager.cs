@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
 
     public AudioSource[] SFX;
+    public AudioSource[] Music;
 
     void Awake()
     {
@@ -27,18 +28,6 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     // Takes in an int and stops the sound effect if it already playing
     // then it plays the sound effect linked to that int.
     public void PlaySFX(int sfx)
@@ -46,5 +35,16 @@ public class AudioManager : MonoBehaviour
         SFX[sfx].Stop();
 
         SFX[sfx].Play();
+    }
+
+    public void PlayMusic(int musicIndex)
+    {
+        Music[musicIndex].Stop();
+        Music[musicIndex].Play();
+    }
+
+    public void StopMusic(int musicIndex)
+    {
+        Music[musicIndex].Stop();
     }
 }

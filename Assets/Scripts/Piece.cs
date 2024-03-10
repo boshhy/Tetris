@@ -46,50 +46,53 @@ public class Piece : MonoBehaviour
 
     public void Update()
     {
-        board.Clear(this);
-
-        lockTime += Time.deltaTime;
-
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Board.canAcceptInput)
         {
-            Rotate(-1);
-        }
-        else if (Input.GetKeyDown(KeyCode.L))
-        {
-            Rotate(1);
-        }
+            board.Clear(this);
 
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            MoveLocation(Vector2Int.left);
-        }
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            MoveLocation(Vector2Int.right);
-        }
+            lockTime += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            AudioManager.instance.PlaySFX(6);
-            MoveLocation(Vector2Int.down);
-        }
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                Rotate(-1);
+            }
+            else if (Input.GetKeyDown(KeyCode.L))
+            {
+                Rotate(1);
+            }
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            HardDrop();
-        }
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                MoveLocation(Vector2Int.left);
+            }
+            else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                MoveLocation(Vector2Int.right);
+            }
 
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            board.HoldPiece();
-        }
+            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                AudioManager.instance.PlaySFX(6);
+                MoveLocation(Vector2Int.down);
+            }
 
-        if (Time.time >= stepTime)
-        {
-            Step();
-        }
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                HardDrop();
+            }
 
-        board.Set(this);
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                board.HoldPiece();
+            }
+
+            if (Time.time >= stepTime)
+            {
+                Step();
+            }
+
+            board.Set(this);
+        }
     }
 
     private void Step()

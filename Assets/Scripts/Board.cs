@@ -5,6 +5,8 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class Board : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class Board : MonoBehaviour
     public Vector2Int validBoardSize = new Vector2Int(10, 20);
     private bool hasMadeHold = false;
     private bool isFirstTimeHold = true;
+    public static bool canAcceptInput = true;
 
     public RectInt validBounds
     {
@@ -52,6 +55,8 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
+        canAcceptInput = true;
+        AudioManager.instance.PlayMusic(0);
         FillUpcomingQueue();
         SpawnPiece();
         DrawUpcomingTetros();
@@ -83,7 +88,15 @@ public class Board : MonoBehaviour
 
     private void GameOver()
     {
-        tilemap.ClearAllTiles();
+        canAcceptInput = false;
+        AudioManager.instance.StopMusic(0);
+        Destroy(AudioManager.instance.gameObject);
+        Invoke("LoadIntroScene", 1f);
+    }
+
+    private void LoadIntroScene()
+    {
+        SceneManager.LoadScene("Intro");
     }
 
     public void Set(Piece piece)
@@ -205,6 +218,7 @@ public class Board : MonoBehaviour
     {
         if (isFirstTimeHold)
         {
+            AudioManager.instance.PlaySFX(1);
             SmallTetrominoData smallData = smallTetrominoes[(int)activePiece.data.tetromino];
             holdPiece.Initialize(this, spawnPosition, smallData);
             DrawHoldPiece(holdPiece);
@@ -217,6 +231,7 @@ public class Board : MonoBehaviour
         {
             if (!hasMadeHold)
             {
+                AudioManager.instance.PlaySFX(1);
                 ClearHoldPiece(holdPiece);
                 int smallTetroOnHold = (int)holdPiece.data.tetromino;
                 SmallTetrominoData smallData = smallTetrominoes[(int)activePiece.data.tetromino];
